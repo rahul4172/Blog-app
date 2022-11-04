@@ -4,11 +4,13 @@ const morgan = require('morgan');
 
 const mongoose = require('mongoose');
 
+const Blog = require('./models/blog');
+
 const app = express();
 
 // connect to mongodb 
 
-const dbURI = 'mongodb+srv://james:rock12@nodetuts.vvspysj.mongodb.net/node-tuts?retryWrites=true&w=majority';
+const dbURI = 'mongodb+srv://rahul:rock12@cluster0.oyiubqm.mongodb.net/node-tuts?retryWrites=true&w=majority';
 mongoose.connect(dbURI,{useNewUrlParser:true,useUnifiedTopology:true})
  .then((result)=>  app.listen(3000))
  .catch((err)=>    console.log(err));
@@ -29,21 +31,64 @@ app.use(express.static('public'));
 app.use(morgan('dev'));
 
 
+// Mongoose and mongo sandbox  routes 
+
+app.get('/add-blog',(req,res)=>{
+    const blog2 = new Blog({
+        title : 'new blog 3' ,
+        snippet : 'about my new blog',
+        body :'more about my new blog'
+    })
+
+    blog2.save()
+    .then((result)=>{
+        res.send(result);
+    })
+    .catch((err)=>{
+        console.log(err);
+});
+});
+
+app.get('/all-blogs',(req,res)=>{
+     Blog.find()
+     .then((result)=>{
+        res.send(result);
+     })
+     .catch((err)=>{
+        console.log(err);
+     });
+});
+
+app.get('/single-blog',(req,res)=>{
+    Blog.findById('6364014e2caaacb368d259f9')
+    .then((result)=>{
+        res.send(result);
+     })
+     .catch((err)=>{
+        console.log(err);
+     });
+})
+
+
 app.get('/', (req,res) => {
  
     // res.send('<p>Helllo Home Page</p>')
     // res.sendFile('./views/index.html',{root:__dirname});
 
-    const blogs = [
-        {title:'Yohan finds someone',snippet:'Lorem ipsum dolor sit amet consectetur.'},
-        {title:'sushi first blog on indian market',snippet:'Lorem ipsum dolor sit amet consectetur.'},
-        {title:'nick blog on songs',snippet:'Lorem ipsum dolor sit amet consectetur.'}
-        
-    ];
-    res.render('index',{title:'Home' ,blogs});
+    res.redirect('/blogs');
   
 });
 
+// blog routes 
+app.get('/blogs',(req,res)=>{
+    Blog.find().sort({createdAt:-1})
+    .then((result)=>{
+        res.render('index',{title : 'All Blogs',blogs: result})
+    })
+    .catch((err)=>{
+        console.log(err);
+    });
+});
 
 
 app.get('/about', (req,res) => {
