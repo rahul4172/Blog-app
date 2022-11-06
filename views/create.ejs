@@ -5,13 +5,13 @@
 <body>
     <%- include('./partials/nav.ejs'); %>
     <div class="create-blog content">
-        <form action="">
+        <form action="/blogs" method="post">
             <label for="title" >Blog Title</label>
-            <input type="text"  id="title" required>
-            <label for="snippet">Blog Snippet</label>
-            <input type="text"   required>
-            <label for="body">Blog Body</label>
-            <textarea id="body" required></textarea>
+            <input type="text"  id="title" name="title" required>
+            <label for="snippet" >Blog Snippet</label>
+            <input type="text" name="snippet"   required>
+            <label for="body" >Blog Body</label>
+            <textarea id="body" name="body" required></textarea>
             <button >Submit</button>
 
         </form>
